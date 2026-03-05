@@ -70,15 +70,8 @@ All KPI values are computed in `get_metrics()` from the loaded DataFrame:
 
 ### Secrets Management
 
-Credentials are injected via Streamlit's encrypted secrets manager (never committed to the repo). The GCP private key is stored as a TOML triple-quoted block string to preserve PEM line breaks. `.gitignore` excludes `.streamlit/secrets.toml`.
+Credentials are injected via Streamlit's encrypted secrets manager. The GCP private key is stored as a TOML triple-quoted block string to preserve PEM line breaks.
 
-```toml
-[gcp_service_account]
-private_key = """-----BEGIN PRIVATE KEY-----
-...
------END PRIVATE KEY-----
-"""
-```
 
 ---
 

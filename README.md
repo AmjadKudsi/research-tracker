@@ -54,18 +54,6 @@ streamlit run app.py
 
 ---
 
-## Deploying to Streamlit Community Cloud
-
-1. Push this repo to GitHub (see steps below)
-2. Go to [share.streamlit.io](https://share.streamlit.io)
-3. Click **New app** → select this repo
-4. Set **Main file path** to `app.py`
-5. Click **Deploy**
-
-> **Note on the Excel file:** Streamlit Community Cloud has an ephemeral filesystem — any rows added via the app will be lost on restart. For persistent storage in the cloud, consider migrating `excel_utils.py` to use Google Sheets or a small database (SQLite via `st.connection`, Supabase, etc.).
-
----
-
 ## Configuration
 
 Edit `config.py` to customise the app:

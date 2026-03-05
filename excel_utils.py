@@ -50,25 +50,42 @@ def load_sheet() -> pd.DataFrame:
     """
     Return the Google Sheet as a DataFrame.
     Row 1 is treated as the header row.
+    The first column has a dynamic formula header like "Name (count = 5)"
+    so we read raw values and assign headers manually.
+    Sheet column order: Name | Date | Notes | Category | Link | Security
     """
     ws = _get_worksheet()
-    records = ws.get_all_records(expected_headers=["Name", "Category", "Date", "Notes", "Link", "Security"])
-    df = pd.DataFrame(records)
+
+    # get_all_values() returns raw strings, no header interpretation
+    all_values = ws.get_all_values()
+    if not all_values:
+        return pd.DataFrame(columns=["Name", "Date", "Notes", "Category", "Link", "Security"])
+
+    # Row 0 is the header row (skip it), rows 1+ are data
+    data_rows = all_values[1:]
+
+    # Map sheet column positions to clean names
+    # Sheet order: A=Name, B=Date, C=Notes, D=Category, E=Link, F=Security
+    columns = ["Name", "Date", "Notes", "Category", "Link", "Security"]
+    df = pd.DataFrame(data_rows, columns=columns)
+
+    # Replace empty strings with NaN so dropna(how="all") works correctly
+    df.replace("", pd.NA, inplace=True)
     return df
 
 
 def append_row_to_excel(entry: dict):
     """
     Append a new paper row to the bottom of the sheet.
-    Parameter name kept as-is so app.py needs no changes.
+    Column order matches the sheet: Name | Date | Notes | Category | Link | Security
     """
     ws = _get_worksheet()
     ws.append_row(
         [
             entry.get("Name", ""),
-            entry.get("Category", ""),
             entry.get("Date", ""),
             entry.get("Notes", ""),
+            entry.get("Category", ""),
             entry.get("Link", ""),
             entry.get("Security", "No"),
         ],
